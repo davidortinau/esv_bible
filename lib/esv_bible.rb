@@ -5,16 +5,17 @@ class EsvBibleError < StandardError; end
 class EsvBible
   VERSION = '0.0.1'
   BASE_URL = 'http://www.esvapi.org/v2/rest'
-  VALID_FORMATS = [:plain_text, :html, :xml]
-  VALID_HTML_OPTIONS = [:include_passage_references, :include_first_verse_numbers, 
+  VALID_FORMATS = [:plain_text, :html, 'crossway-xml-1.0']
+  VALID_HTML_OPTIONS = [:output_format, :include_passage_references, :include_first_verse_numbers, 
       :include_verse_numbers, :include_headings, :include_subheadings, :include_footnotes, :include_footnote_links,
       :include_surrounding_chapters, :include_word_ids, :include_audio_link, :audio_format, :audio_version, 
       :include_copyright, :include_short_copyright]
-  VALID_TEXT_OPTIONS = [:include_passage_references, :include_first_verse_numbers, 
+  VALID_TEXT_OPTIONS = [:output_format, :include_passage_references, :include_first_verse_numbers, 
       :include_verse_numbers, :include_headings, :include_subheadings, :include_selahs, 
       :include_passage_horizontal_lines, :include_heading_horizontal_lines, :include_footnotes, 
       :include_copyright, :include_short_copyright, :include_content_type, :line_length]
-  VALID_XML_OPTIONS  = []
+  VALID_XML_OPTIONS  = [:output_format, :include_xml_declaration, :include_doctype, :include_quote_entities, :include_simple_entities,
+      :include_cross_references, :include_line_breaks, :include_word_ids, :include_virtual_attributes, :base_element]
 
   attr_accessor :key
   
@@ -88,9 +89,9 @@ class EsvBible
     raise EsvBibleError unless VALID_FORMATS.include?(format)
     
     valid_format_attributes = case format
-    when :html        then VALID_HTML_OPTIONS
-    when :plain_text  then VALID_TEXT_OPTIONS
-    when :xml         then VALID_XML_OPTIONS
+      when :html        then VALID_HTML_OPTIONS
+      when :plain_text  then VALID_TEXT_OPTIONS
+      when 'crossway-xml-1.0'         then VALID_XML_OPTIONS
     end
     options.reject! { |key, value| !valid_format_attributes.include?(key) }
   end
